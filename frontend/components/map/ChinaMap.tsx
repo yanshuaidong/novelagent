@@ -3,9 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as echarts from "echarts";
 import { Alert, Skeleton } from "antd";
-
-const CHINA_GEO_URL =
-  "https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json";
+import chinaGeo from "./100000_full.json";
 
 export default function ChinaMap() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -30,12 +28,10 @@ export default function ChinaMap() {
         setLoading(true);
         setError(null);
 
-        const response = await fetch(CHINA_GEO_URL);
-        if (!response.ok) {
-          throw new Error("地图数据加载失败");
-        }
-        const chinaJson = await response.json();
-        echarts.registerMap("china", chinaJson);
+        echarts.registerMap(
+          "china",
+          chinaGeo as Parameters<typeof echarts.registerMap>[1],
+        );
 
         const container = await waitForContainerSize();
         if (

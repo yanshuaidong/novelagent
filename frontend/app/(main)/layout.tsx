@@ -18,7 +18,7 @@ export default function MainLayout({
     <div className="flex h-screen overflow-hidden">
       <AppSidebar />
       <main className="flex-1 flex flex-col min-w-0 bg-[#f5f7fa]">
-        <section className="flex-1 px-6 py-5 overflow-auto">{children}</section>
+        <section className="flex-1 overflow-auto">{children}</section>
       </main>
     </div>
   );
