@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { useSyncExternalStore } from "react";
 
 import { buildNovelPath } from "@/lib/novelPath";
+import { getReadingProgress } from "@/lib/readingProgress";
 
 import type { NovelMeta } from "./types";
 
@@ -8,7 +12,32 @@ interface NovelLibraryProps {
   novels: NovelMeta[];
 }
 
+/** 客户端挂载后再读 localStorage，避免 SSR 水合不一致 */
+function useMounted() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+}
+
+function novelHref(novel: NovelMeta, mounted: boolean): string {
+  if (!mounted) return buildNovelPath([novel.id]);
+
+  const saved = getReadingProgress(novel.id);
+  const chapterId =
+    saved?.chapterId &&
+    novel.chapters.some((c) => c.id === saved.chapterId)
+      ? saved.chapterId
+      : novel.chapters[0]?.id;
+
+  return chapterId
+    ? buildNovelPath([novel.id, chapterId])
+    : buildNovelPath([novel.id]);
+}
+
 export default function NovelLibrary({ novels }: NovelLibraryProps) {
+  const mounted = useMounted();
   return (
     <div className="mx-auto max-w-[1200px]">
       <header className="mb-8">
@@ -31,7 +60,7 @@ export default function NovelLibrary({ novels }: NovelLibraryProps) {
           {novels.map((novel) => (
             <Link
               key={novel.id}
-              href={buildNovelPath([novel.id])}
+              href={novelHref(novel, mounted)}
               className="group block rounded-2xl bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(0,0,0,0.1)]"
             >
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#ecf5ff] text-lg font-semibold text-[#409eff]">

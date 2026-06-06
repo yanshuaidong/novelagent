@@ -7,6 +7,7 @@ import { Modal } from "antd";
 
 import ExampleTreeGraph from "./ExampleTreeGraph";
 import GuangzongFamilyGraph from "./GuangzongFamilyGraph";
+import RelationNetworkGraph from "./RelationNetworkGraph";
 
 /** Apple 系统色 — 浅色模式（字体与按钮） */
 const APPLE = {
@@ -19,7 +20,7 @@ const APPLE = {
 const FONT_SYSTEM =
   "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif";
 
-export const DEFAULT_GRAPH_ID = "guangzong-family";
+export const DEFAULT_GRAPH_ID = "relation-network";
 
 interface GraphEntry {
   id: string;
@@ -30,6 +31,13 @@ interface GraphEntry {
 }
 
 const graphs: GraphEntry[] = [
+  {
+    id: "relation-network",
+    name: "人物关系网络",
+    path: "/character/relation-network",
+    description: "明朝末年人物力导向关系图，涵盖人物志全部人物",
+    component: RelationNetworkGraph,
+  },
   {
     id: "guangzong-family",
     name: "明光宗子女家庭树",

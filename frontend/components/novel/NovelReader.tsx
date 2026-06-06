@@ -17,6 +17,7 @@ import { useReaderStore } from "@/store/novelReader";
 import NovelListDrawer from "./NovelListDrawer";
 import ChapterListDrawer from "./ChapterListDrawer";
 import ReaderSettingsDrawer from "./ReaderSettingsDrawer";
+import { useReadingProgress } from "./useReadingProgress";
 
 interface NovelReaderProps {
   novels: NovelMeta[];
@@ -54,6 +55,12 @@ export default function NovelReader({
 
   const activeNovel = novels.find((n) => n.id === activeNovelId) ?? null;
 
+  const scrollRef = useReadingProgress({
+    activeNovelId,
+    activeChapterId,
+    ready: mounted && Boolean(activeChapterId && chapterHtml),
+  });
+
   const navigate = (segments: string[]) => {
     router.push(buildNovelPath(segments));
   };
@@ -70,7 +77,10 @@ export default function NovelReader({
 
   return (
     <div className="relative h-full">
-      <div className="h-full overflow-y-auto px-4 py-4 bg-[#e0e0e0]">
+      <div
+        ref={scrollRef}
+        className="h-full overflow-y-auto px-4 py-4 bg-[#e0e0e0]"
+      >
         {activeChapterId ? (
           <article
             className="mx-auto max-w-[960px] px-10 py-10 rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-colors duration-200"
