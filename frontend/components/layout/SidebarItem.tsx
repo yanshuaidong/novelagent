@@ -13,7 +13,8 @@ export default function SidebarItem({ item, collapsed }: SidebarItemProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const isActive = pathname === item.path;
+  const isActive =
+    pathname === item.path || pathname.startsWith(`${item.path}/`);
   const Icon = item.icon;
 
   return (

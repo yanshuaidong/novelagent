@@ -1,103 +1,150 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { Graph, treeToGraphData, type NodeData } from "@antv/g6";
+import { useState, type ComponentType } from "react";
+import { useRouter } from "next/navigation";
+import { ApartmentOutlined, RightOutlined } from "@ant-design/icons";
+import { Modal } from "antd";
 
-import { characterTreeData } from "@/lib/characterTreeData";
+import ExampleTreeGraph from "./ExampleTreeGraph";
+import GuangzongFamilyGraph from "./GuangzongFamilyGraph";
 
-export default function CharacterGraph() {
-  const containerRef = useRef<HTMLDivElement | null>(null);
+/** Apple 系统色 — 浅色模式（字体与按钮） */
+const APPLE = {
+  blue: "#007AFF",
+  labelPrimary: "#000000",
+  labelSecondary: "rgba(60, 60, 67, 0.6)",
+  labelQuaternary: "rgba(60, 60, 67, 0.18)",
+} as const;
 
-  useEffect(() => {
-    if (!containerRef.current) return;
+const FONT_SYSTEM =
+  "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif";
 
-    let graph: Graph | null = null;
-    let destroyed = false;
-    const container = containerRef.current;
+export const DEFAULT_GRAPH_ID = "guangzong-family";
 
-    const width = container.clientWidth;
-    const height = container.clientHeight || 520;
+interface GraphEntry {
+  id: string;
+  name: string;
+  path: string;
+  description: string;
+  component: ComponentType;
+}
 
-    const graphData = treeToGraphData(characterTreeData, {
-      getNodeData: (datum, depth) => {
-        const { children: _children, label, ...rest } = datum;
-        void _children;
-        return {
-          ...rest,
-          depth,
-          style: {
-            labelText: label ?? datum.id,
-          },
-        } as NodeData;
-      },
-    });
+const graphs: GraphEntry[] = [
+  {
+    id: "guangzong-family",
+    name: "明光宗子女家庭树",
+    path: "/character/guangzong-family",
+    description: "明光宗朱常洛在世子女关系图，含时间轴与年龄展示",
+    component: GuangzongFamilyGraph,
+  },
+  {
+    id: "example-tree",
+    name: "大明皇室示例",
+    path: "/character/example-tree",
+    description: "基于小说第一章涉及人物的关系示例",
+    component: ExampleTreeGraph,
+  },
+];
 
-    graph = new Graph({
-      container,
-      width,
-      height,
-      autoFit: "view",
-      data: graphData,
-      layout: {
-        type: "compact-box",
-        direction: "TB",
-        getHeight: () => 32,
-        getWidth: () => 120,
-        getVGap: () => 24,
-        getHGap: () => 48,
-      },
-      node: {
-        type: "rect",
-        style: {
-          size: [140, 36],
-          radius: 6,
-          fill: "#ecf5ff",
-          stroke: "#409eff",
-          lineWidth: 1.5,
-          labelFill: "#303133",
-          labelFontSize: 13,
-          labelPlacement: "center",
-        },
-      },
-      edge: {
-        type: "polyline",
-        style: {
-          stroke: "#c0c4cc",
-          lineWidth: 1.5,
-          endArrow: true,
-        },
-      },
-      behaviors: ["drag-canvas", "zoom-canvas", "drag-element"],
-    });
+function getGraph(id: string) {
+  return graphs.find((g) => g.id === id) ?? graphs[0];
+}
 
-    // render() 是异步的；StrictMode 下组件会挂载→卸载→再挂载。
-    // 必须等 render 完成后再 destroy，否则 G6 会警告“实例正在 render 时被销毁”。
-    const renderPromise = graph.render().catch(() => {});
+interface CharacterGraphProps {
+  graphId?: string;
+}
 
-    function handleResize() {
-      if (!graph || destroyed) return;
-      graph.setSize(container.clientWidth, container.clientHeight || 520);
-      graph.fitView();
-    }
+export default function CharacterGraph({
+  graphId = DEFAULT_GRAPH_ID,
+}: CharacterGraphProps) {
+  const router = useRouter();
+  const [pickerOpen, setPickerOpen] = useState(false);
 
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      destroyed = true;
-      window.removeEventListener("resize", handleResize);
-      renderPromise.finally(() => {
-        graph?.destroy();
-        graph = null;
-      });
-    };
-  }, []);
+  const activeGraph = getGraph(graphId);
+  const ActiveGraphComponent = activeGraph.component;
 
   return (
-    <div className="h-full min-h-[560px] bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.06)] p-4 flex flex-col">
-      <p className="m-0 mb-3 text-[13px] text-[#909399]">
-        人物父子关系架构图（示例数据，可后续接入真实人物库）
-      </p>
-      <div ref={containerRef} className="flex-1 min-h-[520px]" />
+    <div
+      className="flex flex-col h-full min-h-[560px] gap-4 font-[family-name:var(--font-system,-apple-system,BlinkMacSystemFont,'SF_Pro_Text','Helvetica_Neue',sans-serif)]"
+    >
+      <div className="shrink-0 bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.06)] px-4 py-3">
+        <button
+          type="button"
+          onClick={() => setPickerOpen(true)}
+          className="inline-flex items-center justify-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg text-[13px] font-normal leading-[1.4] cursor-pointer transition-[background,transform] duration-100 hover:bg-[rgba(0,122,255,0.1)] active:bg-[rgba(0,122,255,0.15)] active:scale-[0.98]"
+          style={{ fontFamily: FONT_SYSTEM, color: APPLE.blue }}
+          title="选择关系图"
+        >
+          <ApartmentOutlined aria-hidden />
+          <span>关系图</span>
+        </button>
+      </div>
+
+      <div className="flex-1 min-h-0 bg-white rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.06)] p-4 flex flex-col">
+        <ActiveGraphComponent />
+      </div>
+
+      <Modal
+        title="选择关系图"
+        open={pickerOpen}
+        onCancel={() => setPickerOpen(false)}
+        footer={null}
+        width={480}
+        destroyOnHidden
+        styles={{
+          header: { fontFamily: FONT_SYSTEM },
+          title: {
+            fontSize: 17,
+            fontWeight: 600,
+            lineHeight: 1.3,
+            color: APPLE.labelPrimary,
+          },
+          body: { fontFamily: FONT_SYSTEM },
+        }}
+      >
+        <div className="flex flex-col gap-2 py-1">
+          {graphs.map((graph) => {
+            const isActive = graph.id === activeGraph.id;
+            return (
+              <button
+                key={graph.id}
+                type="button"
+                onClick={() => {
+                  setPickerOpen(false);
+                  router.push(graph.path);
+                }}
+                className={[
+                  "w-full flex items-center justify-between gap-3 px-4 py-3 min-h-[44px] rounded-[10px] border text-left cursor-pointer transition-[background,transform,border-color] duration-100 active:scale-[0.99]",
+                  isActive
+                    ? "border-[#007AFF] bg-[rgba(0,122,255,0.1)]"
+                    : "border-transparent bg-white hover:bg-[#F2F2F7] active:bg-[rgba(0,122,255,0.08)]",
+                ].join(" ")}
+                style={{ fontFamily: FONT_SYSTEM }}
+              >
+                <div className="min-w-0 flex-1">
+                  <div
+                    className="text-[17px] font-normal leading-[1.3] truncate"
+                    style={{ color: APPLE.labelPrimary }}
+                  >
+                    {graph.name}
+                  </div>
+                  <div
+                    className="mt-0.5 text-[13px] leading-[1.4] line-clamp-2"
+                    style={{ color: APPLE.labelSecondary }}
+                  >
+                    {graph.description}
+                  </div>
+                </div>
+                <RightOutlined
+                  className="shrink-0 text-[14px]"
+                  style={{ color: isActive ? APPLE.blue : APPLE.labelQuaternary }}
+                  aria-hidden
+                />
+              </button>
+            );
+          })}
+        </div>
+      </Modal>
     </div>
   );
 }
