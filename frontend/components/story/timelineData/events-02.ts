@@ -1,0 +1,123 @@
+import type { TimelineEvent } from "../timelineTypes";
+
+export const TIMELINE_EVENTS_02: TimelineEvent[] = [
+  {
+    id: "e011",
+    era: "tianqi",
+    dateLabel: "天启二年 正月（1622）",
+    year: 1622,
+    category: "liaodong",
+    title: "广宁之陷：孙得功叛降，经抚溃逃",
+    summary:
+      "后金先破西平，罗一贵自刭；王化贞中孙得功之计尽发广宁兵，刘渠、祁秉忠战死，广宁失守，经抚先后逃入关。",
+    characters: ["王化贞", "熊廷弼", "罗一贵", "刘渠", "祁秉忠", "孙得功", "高邦佐"],
+    source: "故事1",
+  },
+  {
+    id: "e012",
+    era: "tianqi",
+    dateLabel: "天启二年 二月（1622）",
+    year: 1622,
+    category: "liaodong",
+    title: "孙承宗入阁，王在晋经略辽东",
+    summary:
+      "孙承宗入阁兼掌兵部；王在晋经略辽东蓟镇天津登莱，袁崇焕、阎鸣泰任山海监军。",
+    characters: ["孙承宗", "王在晋", "袁崇焕", "阎鸣泰"],
+    source: "故事1",
+  },
+  {
+    id: "e013",
+    era: "tianqi",
+    dateLabel: "天启二年 二月（1622）",
+    year: 1622,
+    category: "liukou",
+    title: "徐鸿儒白莲教起事（山东）",
+    summary:
+      "徐鸿儒等据郓城起事，攻陷邹县、滕县；赵彦请增兵剿办，杨肇基起总兵山东。",
+    characters: ["徐鸿儒", "赵彦", "杨肇基"],
+    source: "故事1",
+  },
+  {
+    id: "e014",
+    era: "tianqi",
+    dateLabel: "天启二年 四月（1622）",
+    year: 1622,
+    category: "dangzheng",
+    title: "熊廷弼、王化贞下狱论死",
+    summary:
+      "刑部会审，王化贞「有忧国之心无谋国之智」、熊廷弼刚愎逃溃，俱当重典，诏依拟——广宁之责定谳。",
+    characters: ["熊廷弼", "王化贞"],
+    source: "故事1",
+  },
+  {
+    id: "e015",
+    era: "tianqi",
+    dateLabel: "天启二年 八月（1622）",
+    year: 1622,
+    category: "liaodong",
+    title: "孙承宗督师关外，经营宁远",
+    summary:
+      "孙承宗出关督师，亲阅前屯—宁远—觉华二百里形势，用袁崇焕、马世龙、满桂、赵率教等修城屯田。",
+    characters: ["孙承宗", "袁崇焕", "马世龙", "满桂", "赵率教"],
+    source: "故事1",
+  },
+  {
+    id: "e016",
+    era: "tianqi",
+    dateLabel: "天启二年 九月（1622）",
+    year: 1622,
+    category: "jitong",
+    title: "册封皇五弟为信王",
+    summary: "册封皇五弟朱由检为信王（后之崇祯帝），叶向高、韩爌捧册。",
+    characters: ["朱由检", "叶向高", "韩爌"],
+    source: "故事1",
+  },
+  {
+    id: "e017",
+    era: "tianqi",
+    dateLabel: "天启二年 十月（1622）",
+    year: 1622,
+    category: "liukou",
+    title: "徐鸿儒就擒，白莲教平",
+    summary:
+      "邹城恢复，徐鸿儒就擒，午门磔斩传首九边；赵彦、杨肇基、李邦华等叙功。",
+    characters: ["徐鸿儒", "赵彦", "杨肇基", "李邦华"],
+    source: "故事1",
+  },
+  {
+    id: "e018",
+    era: "tianqi",
+    dateLabel: "天启二年 十一月（1622）",
+    year: 1622,
+    category: "xinan",
+    title: "贵阳围解，王三善大破安邦彦",
+    summary:
+      "安邦彦围贵阳近一年，城中仅存二百余人；王三善破贼于龙里，贵阳围解，惨烈堪比睢阳。",
+    characters: ["王三善", "安邦彦", "李橒"],
+    source: "故事1",
+  },
+  {
+    id: "e019",
+    era: "tianqi",
+    dateLabel: "天启三年 七月（1623）",
+    year: 1623,
+    category: "jitong",
+    title: "《光宗实录》告成，辅臣受赏",
+    summary:
+      "《光宗贞皇帝实录宝训》成，叶向高等进呈，上御皇极门受之；张惟贤加太保，辅臣俱加恩荫子。",
+    characters: ["叶向高", "张惟贤", "韩爌", "孙承宗"],
+    source: "故事2",
+  },
+  {
+    id: "e020",
+    era: "tianqi",
+    dateLabel: "天启三年 七月（1623）",
+    year: 1623,
+    category: "yanhuan",
+    title: "工部冬衣案，钟羽正去位",
+    summary:
+      "内官数百成群至工部逼取冬衣银，岁例骤增；工部尚书钟羽正受辱屡乞休，终准回籍——宫府冲突标志性事件。",
+    characters: ["钟羽正", "周士朴", "魏忠贤"],
+    source: "故事2",
+  },
+];

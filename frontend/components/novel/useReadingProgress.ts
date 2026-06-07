@@ -11,6 +11,9 @@ import {
 
 const SAVE_INTERVAL_MS = 60_000;
 
+/** 每本书本会话内只做一次「恢复到上次章节」，避免组件重挂载后反复覆盖手动选章 */
+const initialRedirectDone = new Set<string>();
+
 interface UseReadingProgressOptions {
   activeNovelId: string | null;
   activeChapterId: string | null;
@@ -29,14 +32,12 @@ export function useReadingProgress({
   const router = useRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
   const restoredRef = useRef(false);
-  /** 每本书仅做一次「跳转到上次章节」，避免手动换章后被拉回 */
-  const initialRedirectNovelRef = useRef<string | null>(null);
 
   // 首次进入某本书时：若本地进度章节与当前不同，跳转到上次阅读的章节
   useEffect(() => {
     if (!activeNovelId || !activeChapterId) return;
-    if (initialRedirectNovelRef.current === activeNovelId) return;
-    initialRedirectNovelRef.current = activeNovelId;
+    if (initialRedirectDone.has(activeNovelId)) return;
+    initialRedirectDone.add(activeNovelId);
 
     const saved = getReadingProgress(activeNovelId);
     if (!saved || saved.chapterId === activeChapterId) return;

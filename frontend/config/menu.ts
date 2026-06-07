@@ -1,5 +1,6 @@
 import {
   EnvironmentOutlined,
+  FieldTimeOutlined,
   FileTextOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -13,6 +14,12 @@ export const mainMenuItems: MenuItem[] = [
     icon: FileTextOutlined,
     path: "/novel",
     // children: [{ key: 'chapter-1', title: '第一章', ... }]  // 后期二级侧边栏
+  },
+  {
+    key: "story",
+    title: "故事",
+    icon: FieldTimeOutlined,
+    path: "/story",
   },
   {
     key: "map",

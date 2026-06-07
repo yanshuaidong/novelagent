@@ -10,6 +10,7 @@ import {
 import { Tooltip } from "antd";
 
 import { buildNovelPath } from "@/lib/novelPath";
+import { saveReadingProgress } from "@/lib/readingProgress";
 
 import type { NovelMeta } from "./types";
 import { DEFAULT_BG, DEFAULT_TEXT, themeForBg } from "./readingThemes";
@@ -67,12 +68,18 @@ export default function NovelReader({
 
   const handleSelectNovel = (novelId: string) => {
     setOpenDrawer(null);
+    const novel = novels.find((n) => n.id === novelId);
+    const chapterId = novel?.chapters[0]?.id;
+    if (chapterId) saveReadingProgress(novelId, chapterId, 0);
     navigate([novelId]);
   };
 
   const handleSelectChapter = (chapterId: string) => {
     setOpenDrawer(null);
-    if (activeNovelId) navigate([activeNovelId, chapterId]);
+    if (!activeNovelId) return;
+    // 先写入进度再跳转，避免 useReadingProgress 把手动换章拉回上次章节
+    saveReadingProgress(activeNovelId, chapterId, 0);
+    navigate([activeNovelId, chapterId]);
   };
 
   return (
@@ -83,6 +90,7 @@ export default function NovelReader({
       >
         {activeChapterId ? (
           <article
+            key={activeChapterId}
             className="mx-auto max-w-[960px] px-10 py-10 rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-colors duration-200"
             style={{ backgroundColor: appliedBg, color: appliedText }}
           >
